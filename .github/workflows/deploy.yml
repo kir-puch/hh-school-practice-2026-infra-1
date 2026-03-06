@@ -5,13 +5,7 @@ on:
         branches: ['master']
 
 permissions:
-    contents: read
-    pages: write
-    id-token: write
-
-concurrency:
-    group: 'pages'
-    cancel-in-progress: true
+    contents: write
 
 jobs:
     deploy:
@@ -29,7 +23,12 @@ jobs:
             - name: Install
               run: npm ci
 
+            - name: Build
+              run: npm run build
+
+            # from https://github.com/peaceiris/actions-gh-pages
             - name: Deploy
-              run: npm run deploy
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              uses: peaceiris/actions-gh-pages@v4
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  publish_dir: ./dist
